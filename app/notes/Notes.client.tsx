@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination/Pagination";
 import NoteList from "@/components/NoteList/NoteList";
 import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
+import css from "./Notes.module.css";
 
 export default function NotesClient({
   initialQ,
@@ -57,10 +58,10 @@ export default function NotesClient({
   });
 
   return (
-    <div style={{ display: "grid", gap: 16 }}>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+    <div className={css.container}>
+      <div className={css.toolbar}>
         <SearchBox value={search} onChange={setSearch} placeholder="Search notes..." />
-        <button type="button" onClick={() => setModalOpen(true)}>
+        <button type="button" className={css.createBtn} onClick={() => setModalOpen(true)}>
           Create note
         </button>
       </div>
@@ -80,12 +81,14 @@ export default function NotesClient({
             deletingId={(del.variables as number | undefined) ?? undefined}
           />
           {totalPages > 1 && (
-            <Pagination
-              pageCount={totalPages}
-              currentPage={page}
-              onPageChange={(p) => setPage(p)}
-              isFetchingPage={isFetching}
-            />
+            <div className={css.paginationWrap}>
+              <Pagination
+                pageCount={totalPages}
+                currentPage={page}
+                onPageChange={(p) => setPage(p)}
+                isFetchingPage={isFetching}
+              />
+            </div>
           )}
         </>
       )}
