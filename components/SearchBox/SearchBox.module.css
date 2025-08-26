@@ -1,6 +1,6 @@
 .input {
-  width: min(480px, 100%);
-  padding: 10px 12px;
+  width: 100%; /* управляем шириной из контейнера */
+  padding: 12px 14px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #fff;

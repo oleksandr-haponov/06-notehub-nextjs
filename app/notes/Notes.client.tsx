@@ -59,11 +59,14 @@ export default function NotesClient({
 
   return (
     <div className={css.container}>
+      {/* Центрируем поиск + кнопку над карточками */}
       <div className={css.toolbar}>
-        <SearchBox value={search} onChange={setSearch} placeholder="Search notes..." />
-        <button type="button" className={css.createBtn} onClick={() => setModalOpen(true)}>
-          Create note
-        </button>
+        <div className={css.controls}>
+          <SearchBox value={search} onChange={setSearch} placeholder="Search notes..." />
+          <button type="button" className={css.createBtn} onClick={() => setModalOpen(true)}>
+            Create note
+          </button>
+        </div>
       </div>
 
       {isLoading ? (

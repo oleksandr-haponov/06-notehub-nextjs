@@ -1,35 +1,42 @@
 .container {
   max-width: 1120px;
-  margin: 0 auto; /* не прилипает к краям */
+  margin: 0 auto;
   padding: 24px 20px;
   display: grid;
   gap: 20px;
+  background: transparent;
 }
 
+/* Центрируем блок управления */
 .toolbar {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: flex-start; /* можно поменять на space-between */
+  display: grid;
+  justify-items: center;
 }
 
+.controls {
+  width: min(520px, 100%);
+  display: grid;
+  gap: 12px; /* инпут и кнопка друг под другом */
+}
+
+/* Кнопка как primary и той же ширины, что инпут */
 .createBtn {
-  padding: 10px 14px;
+  width: 100%;
+  padding: 12px 16px;
   border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  color: #111827;
-  font-weight: 600;
+  border: 1px solid transparent;
+  background: #2563eb; /* синий, как View details */
+  color: #fff;
+  font-weight: 700;
+  line-height: 1;
   transition:
     background 0.15s ease,
-    box-shadow 0.15s ease,
-    border-color 0.15s ease;
+    transform 0.05s ease,
+    box-shadow 0.15s ease;
 }
 
 .createBtn:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+  background: #1d4ed8;
 }
 
 .paginationWrap {
