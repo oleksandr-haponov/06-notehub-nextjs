@@ -1,84 +1,41 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchNotes, deleteNote } from "@/lib/api";
-import { Note } from "@/types/note";
-import styles from "./Notes.module.css";
-import NoteCard from "@/components/NoteCard/NoteCard";
-import SearchBox from "@/components/SearchBox/SearchBox";
-import Pagination from "@/components/Pagination/Pagination";
-import Loader from "@/components/Loader/Loader";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
-import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { fetchNotes, type PaginatedNotesResponse } from "@/lib/api";
 
-const NOTES_PER_PAGE = 6;
+export default function NotesClient({
+  initialQ,
+  initialPage,
+}: {
+  initialQ?: string;
+  initialPage: number;
+}) {
+  const q = initialQ ?? "";
+  const page = initialPage || 1;
 
-export default function NotesClient() {
-  const queryClient = useQueryClient();
-
-  const { data, isLoading, isError } = useQuery<Note[]>({
-    queryKey: ["notes"],
-    queryFn: fetchNotes,
+  const { data, isLoading, error } = useQuery<PaginatedNotesResponse>({
+    queryKey: ["notes", { q, page }],
+    queryFn: () => fetchNotes({ q, page }),
+    refetchOnWindowFocus: false,
   });
 
-  const mutation = useMutation({
-    mutationFn: deleteNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
-  });
+  if (isLoading) return <p>Loading, please wait...</p>;
+  if (error) {
+    const msg = (error as Error).message || "Unknown error";
+    return <p>Could not fetch the list of notes. {msg}</p>;
+  }
 
-  // состояние поиска и страницы
-  const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // фильтрация заметок по запросу
-  const filteredNotes = useMemo(() => {
-    if (!data) return [];
-    return data.filter(
-      (note) =>
-        note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        note.content.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [data, searchQuery]);
-
-  // пагинация
-  const totalPages = Math.ceil(filteredNotes.length / NOTES_PER_PAGE);
-  const paginatedNotes = filteredNotes.slice(
-    (currentPage - 1) * NOTES_PER_PAGE,
-    currentPage * NOTES_PER_PAGE,
-  );
-
-  if (isLoading) return <Loader />;
-  if (isError)
-    return <ErrorMessage message="Could not fetch the list of notes." />;
+  const notes = data?.notes ?? [];
+  if (notes.length === 0) return <p>No notes found.</p>;
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Notes</h1>
-
-      <SearchBox
-        onSearch={(query) => {
-          setSearchQuery(query);
-          setCurrentPage(1); // при поиске сбрасываем на первую страницу
-        }}
-      />
-
-      <ul className={styles.list}>
-        {paginatedNotes.map((note) => (
-          <NoteCard
-            key={note.id}
-            note={note}
-            onDelete={(id) => mutation.mutate(id)}
-          />
-        ))}
-      </ul>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
-    </div>
+    <ul>
+      {notes.map((n) => (
+        <li key={n.id}>
+          <Link href={`/notes/${n.id}`}>View details</Link> <span>{n.title}</span>
+        </li>
+      ))}
+    </ul>
   );
 }

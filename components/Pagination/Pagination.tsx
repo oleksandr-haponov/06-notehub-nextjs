@@ -1,34 +1,37 @@
 "use client";
 
-import styles from "./Pagination.module.css";
+import ReactPaginate from "react-paginate";
+import css from "./Pagination.module.css";
 
-interface Props {
-  currentPage: number;
-  totalPages: number;
+export interface PaginationProps {
+  pageCount: number;
+  currentPage: number; // 1-based
   onPageChange: (page: number) => void;
+  isFetchingPage?: boolean;
 }
 
 export default function Pagination({
+  pageCount,
   currentPage,
-  totalPages,
   onPageChange,
-}: Props) {
-  if (totalPages <= 1) return null;
-
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
+  isFetchingPage,
+}: PaginationProps) {
   return (
-    <div className={styles.pagination}>
-      {pages.map((page) => (
-        <button
-          key={page}
-          className={`${styles.button} ${page === currentPage ? styles.active : ""}`}
-          onClick={() => onPageChange(page)}
-          disabled={page === currentPage}
-        >
-          {page}
-        </button>
-      ))}
+    <div className={css.wrapper}>
+      {isFetchingPage && <span className={css.spinner}>Loading...</span>}
+      <ReactPaginate
+        pageCount={pageCount}
+        forcePage={Math.max(0, currentPage - 1)}
+        onPageChange={(sel) => onPageChange(sel.selected + 1)}
+        containerClassName={css.pagination}
+        pageLinkClassName={css.page}
+        previousLabel="<"
+        nextLabel=">"
+        previousClassName={css.nav}
+        nextClassName={css.nav}
+        activeLinkClassName={css.active}
+        disabledClassName={css.disabled}
+      />
     </div>
   );
 }

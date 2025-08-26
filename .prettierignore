@@ -1,6 +1,14 @@
-node_modules
+# builds
 .next
 out
-build
+dist
+
+# deps
+node_modules
+
+# vercel
+.vercel
+
+# misc
 coverage
-package-lock.json
+*.log

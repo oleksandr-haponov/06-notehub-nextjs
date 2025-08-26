@@ -11,17 +11,12 @@ export const fetchNoteById = async (id: string): Promise<Note> => {
   return data;
 };
 
-export const createNote = async (
-  note: Omit<Note, "id" | "createdAt">,
-): Promise<Note> => {
+export const createNote = async (note: Omit<Note, "id" | "createdAt">): Promise<Note> => {
   const { data } = await api.post("/notes", note);
   return data;
 };
 
-export const updateNote = async (
-  id: string,
-  note: Partial<Note>,
-): Promise<Note> => {
+export const updateNote = async (id: string, note: Partial<Note>): Promise<Note> => {
   const { data } = await api.put(`/notes/${id}`, note);
   return data;
 };
