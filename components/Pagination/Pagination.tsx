@@ -17,21 +17,21 @@ export default function Pagination({
   isFetchingPage,
 }: PaginationProps) {
   return (
-    <div className={css.wrapper}>
-      {isFetchingPage && <span className={css.spinner}>Loading...</span>}
+    <nav aria-label="Pagination">
+      {isFetchingPage && (
+        <span style={{ display: "block", textAlign: "center", marginBottom: 8 }}>Loading...</span>
+      )}
       <ReactPaginate
         pageCount={pageCount}
         forcePage={Math.max(0, currentPage - 1)}
         onPageChange={(sel) => onPageChange(sel.selected + 1)}
-        containerClassName={css.pagination}
-        pageLinkClassName={css.page}
         previousLabel="<"
         nextLabel=">"
-        previousClassName={css.nav}
-        nextClassName={css.nav}
-        activeLinkClassName={css.active}
+        containerClassName={css.pagination}
+        activeClassName={css.active}
         disabledClassName={css.disabled}
+        // li/a стилизуются через descendant селекторы в CSS-модуле
       />
-    </div>
+    </nav>
   );
 }

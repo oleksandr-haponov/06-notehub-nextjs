@@ -11,18 +11,21 @@ export interface ModalProps {
 
 export default function Modal({ open, onClose, children }: ModalProps) {
   useEffect(() => {
-    function onKey(e: KeyboardEvent) {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
-    }
-    if (open) window.addEventListener("keydown", onKey);
+    };
+    window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
   if (!open) return null;
 
+  const stop = (e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation();
+
   return (
     <div className={css.backdrop} onClick={onClose} role="dialog" aria-modal="true">
-      <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+      <div className={css.modal} onClick={stop}>
         <button className={css.close} onClick={onClose} aria-label="Close modal">
           ×
         </button>

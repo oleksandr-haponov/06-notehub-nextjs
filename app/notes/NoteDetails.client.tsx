@@ -1,11 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { fetchNoteById } from "@/lib/api";
 import type { Note } from "@/types/note";
 import css from "./NoteDetails.module.css";
 
 export default function NoteDetailsClient({ id }: { id: number }) {
+  const router = useRouter();
+
   const {
     data: note,
     isLoading,
@@ -22,10 +25,19 @@ export default function NoteDetailsClient({ id }: { id: number }) {
   return (
     <div className={css.container}>
       <div className={css.item}>
+        <button className={css.backBtn} onClick={() => router.back()}>
+          ← Back
+        </button>
+
         <div className={css.header}>
           <h2>{note.title}</h2>
+          <span className={css.tag} title={note.tag}>
+            {note.tag}
+          </span>
         </div>
+
         <p className={css.content}>{note.content}</p>
+
         <p className={css.date}>{new Date(note.createdAt).toLocaleDateString()}</p>
       </div>
     </div>

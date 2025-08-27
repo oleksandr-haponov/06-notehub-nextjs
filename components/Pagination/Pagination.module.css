@@ -5,7 +5,6 @@
   margin: 16px 0;
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .pagination li {
@@ -46,4 +45,9 @@
 .active a {
   color: #fff !important;
   font-weight: 500;
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }

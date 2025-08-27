@@ -1,46 +1,32 @@
-.container {
-  max-width: 1280px; /* шире, чтобы 3 карточки смотрелись свободно */
-  margin: 0 auto;
-  padding: 24px 20px;
-  display: grid;
-  gap: 20px;
-  background: transparent;
+.app {
+  width: 90%;
+  max-width: 1280px;
+  margin: 0px auto;
+  padding: 0 16px 16px;
+  flex: 1;
 }
 
-/* Центрируем блок управления */
 .toolbar {
-  display: grid;
-  justify-items: center;
-}
-
-.controls {
-  width: min(520px, 100%);
-  display: grid;
-  gap: 12px; /* инпут и кнопка друг под другом */
-}
-
-/* Кнопка как primary и той же ширины, что инпут */
-.createBtn {
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  background: #2563eb;
-  color: #fff;
-  font-weight: 700;
-  line-height: 1;
-  transition:
-    background 0.15s ease,
-    transform 0.05s ease,
-    box-shadow 0.15s ease;
-}
-
-.createBtn:hover {
-  background: #1d4ed8;
-}
-
-.paginationWrap {
+  margin-bottom: 16px;
   display: flex;
-  justify-content: center;
-  padding-top: 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.button {
+  padding: 6px 12px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #0d6efd;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #0b5ed7;
 }

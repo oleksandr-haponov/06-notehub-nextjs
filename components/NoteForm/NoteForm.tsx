@@ -18,17 +18,18 @@ export default function NoteForm({ onSuccess, onCancel, isSubmitting, errorMsg }
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("Todo");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSuccess({ title: title.trim(), content: content.trim(), tag });
-  }
+  };
 
   return (
     <form className={css.form} onSubmit={handleSubmit}>
-      <div className={css.field}>
+      <div className={css.formGroup}>
         <label htmlFor="title">Title</label>
         <input
           id="title"
+          className={css.input}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
@@ -36,10 +37,11 @@ export default function NoteForm({ onSuccess, onCancel, isSubmitting, errorMsg }
         />
       </div>
 
-      <div className={css.field}>
+      <div className={css.formGroup}>
         <label htmlFor="content">Content</label>
         <textarea
           id="content"
+          className={css.textarea}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
@@ -47,9 +49,14 @@ export default function NoteForm({ onSuccess, onCancel, isSubmitting, errorMsg }
         />
       </div>
 
-      <div className={css.field}>
+      <div className={css.formGroup}>
         <label htmlFor="tag">Tag</label>
-        <select id="tag" value={tag} onChange={(e) => setTag(e.target.value)}>
+        <select
+          id="tag"
+          className={css.select}
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+        >
           {TAGS.map((t) => (
             <option key={t} value={t}>
               {t}
@@ -61,10 +68,10 @@ export default function NoteForm({ onSuccess, onCancel, isSubmitting, errorMsg }
       {errorMsg && <p className={css.error}>{errorMsg}</p>}
 
       <div className={css.actions}>
-        <button type="button" onClick={onCancel}>
+        <button type="button" className={css.cancelButton} onClick={onCancel}>
           Cancel
         </button>
-        <button type="submit" disabled={isSubmitting}>
+        <button type="submit" className={css.submitButton} disabled={isSubmitting}>
           {isSubmitting ? "Creating..." : "Create"}
         </button>
       </div>

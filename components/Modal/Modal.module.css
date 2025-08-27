@@ -20,3 +20,20 @@
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
+/* Кнопка закрытия (минимальный стиль) */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #6c757d;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #212529;
+}
