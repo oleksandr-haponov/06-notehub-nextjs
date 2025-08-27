@@ -6,7 +6,7 @@ import styles from "./NoteCard.module.css";
 
 export interface NoteCardProps {
   note: Note;
-  onDelete?: (id: number) => void; // <-- число, не строка
+  onDelete?: (id: string) => void; // <-- строка, не число
 }
 
 export default function NoteCard({ note, onDelete }: NoteCardProps) {

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Link from "next/link";
-import { deleteNote, fetchNotes, type PaginatedNotesResponse } from "@/lib/api";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { fetchNotes, type PaginatedNotesResponse } from "@/lib/api";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteList from "@/components/NoteList/NoteList";
+import Modal from "@/components/Modal/Modal";
+import NoteForm from "@/components/NoteForm/NoteForm";
 import css from "./NotesPage.module.css";
 
 export default function NotesClient({
@@ -16,13 +17,11 @@ export default function NotesClient({
   initialQ?: string;
   initialPage: number;
 }) {
-  const qc = useQueryClient();
-
   const [search, setSearch] = useState<string>(initialQ ?? "");
   const [debouncedQ, setDebouncedQ] = useState<string>(initialQ ?? "");
   const [page, setPage] = useState<number>(initialPage || 1);
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  // debounce поиска
   useEffect(() => {
     const t = setTimeout(() => {
       setDebouncedQ(search.trim());
@@ -41,20 +40,15 @@ export default function NotesClient({
   const notes = data?.notes ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  const del = useMutation({
-    mutationFn: (id: number) => deleteNote(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["notes"] }),
-  });
-
   return (
     <div className={css.app}>
       <div className={css.toolbar}>
         <div style={{ flex: "1 1 520px", maxWidth: 520 }}>
           <SearchBox value={search} onChange={setSearch} placeholder="Search notes..." />
         </div>
-        <Link href="/notes/New" className={css.button}>
+        <button type="button" className={css.button} onClick={() => setModalOpen(true)}>
           Create note
-        </Link>
+        </button>
       </div>
 
       {isLoading ? (
@@ -65,12 +59,7 @@ export default function NotesClient({
         <p>No notes found.</p>
       ) : (
         <>
-          <NoteList
-            notes={notes}
-            onDelete={(id) => del.mutate(id)}
-            isDeleting={del.isPending}
-            deletingId={(del.variables as number | undefined) ?? undefined}
-          />
+          <NoteList notes={notes} />
           {totalPages > 1 && (
             <div className={css.paginationWrap}>
               <Pagination
@@ -83,6 +72,10 @@ export default function NotesClient({
           )}
         </>
       )}
+
+      <Modal open={isModalOpen} onClose={() => setModalOpen(false)}>
+        <NoteForm onCancel={() => setModalOpen(false)} />
+      </Modal>
     </div>
   );
 }

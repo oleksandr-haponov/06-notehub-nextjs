@@ -4,7 +4,7 @@ const now = Date.now();
 
 export const notes: Note[] = [
   {
-    id: 1,
+    id: "1",
     title: "Первая заметка",
     content: "Это пример заметки.",
     tag: "Todo",
@@ -12,7 +12,7 @@ export const notes: Note[] = [
     updatedAt: new Date(now - 1000 * 60 * 60 * 24 * 3).toISOString(),
   },
   {
-    id: 2,
+    id: "2",
     title: "Рабочая задача",
     content: "Подготовить отчёт по проекту.",
     tag: "Work",
@@ -20,7 +20,7 @@ export const notes: Note[] = [
     updatedAt: new Date(now - 1000 * 60 * 60 * 24 * 2).toISOString(),
   },
   {
-    id: 3,
+    id: "3",
     title: "Идея",
     content: "Попробовать новый подход к кешированию.",
     tag: "Idea",
@@ -28,7 +28,7 @@ export const notes: Note[] = [
     updatedAt: new Date(now - 1000 * 60 * 60 * 24).toISOString(),
   },
   {
-    id: 4,
+    id: "4",
     title: "Личное",
     content: "Купить продукты к выходным.",
     tag: "Personal",

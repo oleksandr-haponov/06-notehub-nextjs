@@ -7,21 +7,24 @@ import type { Note } from "@/types/note";
 import { formatDateUTC } from "@/lib/format";
 import css from "../NoteDetails.module.css";
 
-export default function NoteDetailsClient({ id }: { id: number }) {
+export default function NoteDetailsClient({ id }: { id: string }) {
   const router = useRouter();
 
   const {
     data: note,
     isLoading,
+    isError,
     error,
   } = useQuery<Note>({
     queryKey: ["note", id],
     queryFn: () => fetchNoteById(id),
-    refetchOnMount: false, // требование ментора
+    refetchOnMount: false,
+    retry: false,
   });
 
   if (isLoading) return <p>Loading, please wait...</p>;
-  if (error || !note) return <p>Something went wrong.</p>;
+  if (isError) return <p>Could not fetch note details. {(error as Error).message}</p>;
+  if (!note) return <p>Note not found.</p>;
 
   return (
     <div className={css.container}>

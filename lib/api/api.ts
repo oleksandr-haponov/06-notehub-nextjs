@@ -22,7 +22,7 @@ export async function fetchNotes(params: NotesQueryParams = {}): Promise<Paginat
   return data;
 }
 
-export async function fetchNoteById(id: number): Promise<Note> {
+export async function fetchNoteById(id: string): Promise<Note> {
   const { data } = await api.get<Note>(`/notes/${id}`);
   return data;
 }
@@ -32,11 +32,11 @@ export async function createNote(payload: CreateNotePayload): Promise<Note> {
   return data;
 }
 
-export async function updateNote(id: number, patch: UpdateNotePayload): Promise<Note> {
+export async function updateNote(id: string, patch: UpdateNotePayload): Promise<Note> {
   const { data } = await api.patch<Note>(`/notes/${id}`, patch);
   return data;
 }
 
-export async function deleteNote(id: number): Promise<void> {
+export async function deleteNote(id: string): Promise<void> {
   await api.delete<void>(`/notes/${id}`);
 }
