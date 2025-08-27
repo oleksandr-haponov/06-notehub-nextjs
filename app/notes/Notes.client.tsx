@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createNote, deleteNote, fetchNotes, type CreateNotePayload } from "@/lib/api";
+import Link from "next/link";
+import { deleteNote, fetchNotes, type PaginatedNotesResponse } from "@/lib/api";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteList from "@/components/NoteList/NoteList";
-import Modal from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm";
-import css from "./Notes.module.css";
+import css from "./NotesPage.module.css";
 
 export default function NotesClient({
   initialQ,
@@ -19,7 +18,6 @@ export default function NotesClient({
 }) {
   const qc = useQueryClient();
 
-  const [isModalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState<string>(initialQ ?? "");
   const [debouncedQ, setDebouncedQ] = useState<string>(initialQ ?? "");
   const [page, setPage] = useState<number>(initialPage || 1);
@@ -27,46 +25,36 @@ export default function NotesClient({
   // debounce поиска
   useEffect(() => {
     const t = setTimeout(() => {
-      const next = search.trim();
-      setDebouncedQ(next);
+      setDebouncedQ(search.trim());
       setPage(1);
     }, 400);
     return () => clearTimeout(t);
   }, [search]);
 
-  const { data, isLoading, error, isFetching } = useQuery({
+  const { data, isLoading, error, isFetching } = useQuery<PaginatedNotesResponse>({
     queryKey: ["notes", { q: debouncedQ, page }],
     queryFn: () => fetchNotes({ q: debouncedQ, page }),
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
   });
 
-  const totalPages = data?.totalPages ?? 1;
   const notes = data?.notes ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   const del = useMutation({
     mutationFn: (id: number) => deleteNote(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["notes"] }),
   });
 
-  const create = useMutation({
-    mutationFn: (payload: CreateNotePayload) => createNote(payload),
-    onSuccess: () => {
-      setModalOpen(false);
-      qc.invalidateQueries({ queryKey: ["notes"] });
-    },
-  });
-
   return (
     <div className={css.app}>
       <div className={css.toolbar}>
-        {/* инпут слева, кнопка Create справа */}
         <div style={{ flex: "1 1 520px", maxWidth: 520 }}>
           <SearchBox value={search} onChange={setSearch} placeholder="Search notes..." />
         </div>
-        <button type="button" className={css.button} onClick={() => setModalOpen(true)}>
+        <Link href="/notes/New" className={css.button}>
           Create note
-        </button>
+        </Link>
       </div>
 
       {isLoading ? (
@@ -95,19 +83,6 @@ export default function NotesClient({
           )}
         </>
       )}
-
-      <Modal open={isModalOpen} onClose={() => setModalOpen(false)}>
-        <NoteForm
-          onCancel={() => setModalOpen(false)}
-          onSuccess={(payload) => create.mutate(payload)}
-          isSubmitting={create.isPending}
-          errorMsg={
-            create.isError
-              ? ((create.error as Error)?.message ?? "Failed to create note")
-              : undefined
-          }
-        />
-      </Modal>
     </div>
   );
 }

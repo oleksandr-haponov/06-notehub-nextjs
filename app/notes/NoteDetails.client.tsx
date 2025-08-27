@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { fetchNoteById } from "@/lib/api";
 import type { Note } from "@/types/note";
+import { formatDateUTC } from "@/lib/format";
 import css from "./NoteDetails.module.css";
 
 export default function NoteDetailsClient({ id }: { id: number }) {
   const router = useRouter();
-
   const {
     data: note,
     isLoading,
@@ -38,7 +38,7 @@ export default function NoteDetailsClient({ id }: { id: number }) {
 
         <p className={css.content}>{note.content}</p>
 
-        <p className={css.date}>{new Date(note.createdAt).toLocaleDateString()}</p>
+        <p className={css.date}>{formatDateUTC(note.createdAt)}</p>
       </div>
     </div>
   );
