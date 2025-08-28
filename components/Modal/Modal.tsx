@@ -12,20 +12,20 @@ export interface ModalProps {
 
 export default function Modal({ open, onClose, children }: ModalProps) {
   const [mounted, setMounted] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const portalContainerRef = useRef<HTMLDivElement | null>(null);
 
   // создаём контейнер для портала один раз и монтируем его в body
   useEffect(() => {
     const el = document.createElement("div");
     el.setAttribute("data-modal-root", "true");
-    containerRef.current = el;
+    portalContainerRef.current = el;
     document.body.appendChild(el);
     setMounted(true);
 
     return () => {
-      if (containerRef.current) {
-        document.body.removeChild(containerRef.current);
-        containerRef.current = null;
+      if (portalContainerRef.current) {
+        document.body.removeChild(portalContainerRef.current);
+        portalContainerRef.current = null;
       }
     };
   }, []);
@@ -50,13 +50,18 @@ export default function Modal({ open, onClose, children }: ModalProps) {
     };
   }, [open]);
 
-  if (!open || !mounted || !containerRef.current) return null;
+  if (!open || !mounted || !portalContainerRef.current) return null;
 
-  const stop = (e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation();
+  // ЯВНАЯ проверка: закрываем ТОЛЬКО если клик был по самому бекдропу
+  const handleBackdropClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.currentTarget === e.target) {
+      onClose();
+    }
+  };
 
   const node = (
-    <div className={css.backdrop} onClick={onClose} role="dialog" aria-modal="true">
-      <div className={css.modal} onClick={stop}>
+    <div className={css.backdrop} role="dialog" aria-modal="true" onClick={handleBackdropClick}>
+      <div className={css.modal} onClick={(e) => e.stopPropagation()}>
         <button className={css.close} onClick={onClose} aria-label="Close modal">
           ×
         </button>
@@ -65,5 +70,5 @@ export default function Modal({ open, onClose, children }: ModalProps) {
     </div>
   );
 
-  return createPortal(node, containerRef.current);
+  return createPortal(node, portalContainerRef.current);
 }
